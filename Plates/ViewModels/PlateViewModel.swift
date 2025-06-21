@@ -32,10 +32,14 @@ struct ImageState: Codable {
     }
 }
 
+@MainActor
 class PlateViewModel: ObservableObject {
     @Published var plateItems: [PlateItem] = []
+    @Published var isLoading = false
+    @Published var cloudKitAvailable = true
     private let saveKey = "savedPlateItems"
     private let stateKey = "savedImageStates"
+    private let migrationKey = "hasMigratedToCloud"
     private var imageStates: [UUID: ImageState] = [:]
     
     init() {
@@ -58,9 +62,12 @@ class PlateViewModel: ObservableObject {
     func deleteItem(_ item: PlateItem) {
         plateItems.removeAll { $0.id == item.id }
         imageStates.removeValue(forKey: item.id)
+        
+        // Delete both local and cloud images
         if let imageURL = item.imageURL {
-            try? FileManager.default.removeItem(at: imageURL)
+            PlateItem.deleteImage(at: imageURL, cloudID: item.cloudImageID)
         }
+        
         saveItems()
         saveStates()
     }
@@ -79,6 +86,123 @@ class PlateViewModel: ObservableObject {
     
     func getSavedState(for item: PlateItem) -> ImageState? {
         return imageStates[item.id]
+    }
+    
+    // Calculate storage usage
+    func getStorageUsage() -> (count: Int, totalSize: String) {
+        let count = plateItems.count
+        
+        // Calculate total size of local files
+        var totalSize: Int64 = 0
+        for item in plateItems {
+            if let imageURL = item.imageURL,
+               FileManager.default.fileExists(atPath: imageURL.path) {
+                if let attributes = try? FileManager.default.attributesOfItem(atPath: imageURL.path),
+                   let fileSize = attributes[.size] as? Int64 {
+                    totalSize += fileSize
+                }
+            }
+        }
+        
+        let totalSizeMB = Double(totalSize) / (1024 * 1024)
+        let sizeString = String(format: "%.1f MB", totalSizeMB)
+        
+        return (count, sizeString)
+    }
+    
+    // Async method to save image and create item
+    func saveItemWithImage(title: String, plateNumber: String, vehicleType: PlateItem.VehicleType, image: UIImage, editingItem: PlateItem? = nil) async -> Bool {
+        isLoading = true
+        
+        defer { 
+            Task { @MainActor in
+                self.isLoading = false
+            }
+        }
+        
+        let result = await PlateItem.saveImage(image)
+        
+        guard let localURL = result.localURL else {
+            print("Failed to save image")
+            return false
+        }
+        
+        let item = PlateItem(
+            id: editingItem?.id ?? UUID(),
+            title: title,
+            plateNumber: plateNumber,
+            vehicleType: vehicleType,
+            imageURL: localURL,
+            cloudImageID: result.cloudID,
+            showCount: editingItem?.showCount ?? 0
+        )
+        
+        await MainActor.run {
+            if editingItem != nil {
+                self.updateItem(item)
+            } else {
+                self.addItem(item)
+            }
+        }
+        
+        return true
+    }
+    
+    // Migration method to upload existing local images to cloud
+    func migrateExistingImagesToCloud() async {
+        // Check if migration has already been performed
+        if UserDefaults.standard.bool(forKey: migrationKey) {
+            return
+        }
+        
+        await MainActor.run {
+            isLoading = true
+        }
+        
+        defer { 
+            Task { @MainActor in
+                self.isLoading = false
+            }
+        }
+        
+        // Check CloudKit availability first
+        let cloudKitAvailable = await CloudStorageService.shared.checkCloudKitAvailability()
+        
+        await MainActor.run {
+            self.cloudKitAvailable = cloudKitAvailable
+        }
+        
+        if !cloudKitAvailable {
+            print("CloudKit is not available, skipping migration")
+            // Mark migration as complete even if CloudKit is not available
+            // to prevent repeated attempts
+            UserDefaults.standard.set(true, forKey: migrationKey)
+            return
+        }
+        
+        var hasChanges = false
+        
+        for (index, item) in plateItems.enumerated() {
+            if let imageURL = item.imageURL, item.cloudImageID == nil {
+                if let cloudID = await CloudStorageService.shared.migrateLocalImageToCloud(localURL: imageURL) {
+                    var updatedItem = item
+                    updatedItem.cloudImageID = cloudID
+                    await MainActor.run {
+                        self.plateItems[index] = updatedItem
+                    }
+                    hasChanges = true
+                }
+            }
+        }
+        
+        if hasChanges {
+            await MainActor.run {
+                saveItems()
+            }
+        }
+        
+        // Mark migration as complete
+        UserDefaults.standard.set(true, forKey: migrationKey)
     }
     
     private func saveItems() {
