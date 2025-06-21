@@ -11,37 +11,6 @@ struct PlateListView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                if !viewModel.cloudKitAvailable {
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle")
-                            .foregroundColor(.orange)
-                        Text("iCloud 同步不可用")
-                            .font(.caption)
-                            .foregroundColor(.orange)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                    .background(Color.orange.opacity(0.1))
-                }
-                
-                // Storage usage indicator
-                HStack {
-                    Image(systemName: "icloud")
-                        .foregroundColor(.blue)
-                    Text("存储使用情况")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                    Spacer()
-                    let usage = viewModel.getStorageUsage()
-                    Text("\(usage.count) 张图片 • \(usage.totalSize)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 6)
-                .background(Color.blue.opacity(0.05))
-                
                 List {
                     ForEach(viewModel.plateItems) { item in
                         PlateItemRow(item: item, viewModel: viewModel)
