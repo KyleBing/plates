@@ -56,7 +56,7 @@ struct PlateDetailView: View {
     @State private var showingResetConfirmation = false
 
     private func resetImageState() {
-        withAnimation(.spring()) {
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
             scale = 1.0
             offset = .zero
             lastScale = 1.0
@@ -110,17 +110,16 @@ struct PlateDetailView: View {
 
     var body: some View {
         ZStack {
-            LandscapeViewController()
-                .edgesIgnoringSafeArea(.all)
-
             GeometryReader { geometry in
                 ZStack {
-                    Color.black.edgesIgnoringSafeArea(.all)
+                    Color.black
+                        .edgesIgnoringSafeArea(.all)
 
                     if let image = loadedImage {
                         Image(uiImage: image)
                             .resizable()
-                            .scaledToFit()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: geometry.size.width, height: geometry.size.height)
                             .scaleEffect(scale)
                             .offset(offset)
                             .brightness(0)
@@ -131,16 +130,23 @@ struct PlateDetailView: View {
                                         .onChanged { value in
                                             let delta = value / lastScale
                                             lastScale = value
-                                            scale = min(max(scale * delta, 0.5), 10.0)
+                                            scale = min(max(scale * delta, 0.1), 20.0)
                                         }
                                         .onEnded { _ in
                                             lastScale = 1.0
                                         },
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            offset = CGSize(
+                                            let newOffset = CGSize(
                                                 width: lastOffset.width + value.translation.width,
                                                 height: lastOffset.height + value.translation.height
+                                            )
+                                            
+                                            // Allow some overflow but prevent excessive dragging
+                                            let maxOffset = geometry.size.width * 0.5 * scale
+                                            offset = CGSize(
+                                                width: max(-maxOffset, min(maxOffset, newOffset.width)),
+                                                height: max(-maxOffset, min(maxOffset, newOffset.height))
                                             )
                                         }
                                         .onEnded { _ in
@@ -152,6 +158,19 @@ struct PlateDetailView: View {
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.3)) {
                                     showControls.toggle()
+                                }
+                            }
+                            .onTapGesture(count: 2) {
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                    if scale > 1.0 {
+                                        // Reset to original size
+                                        scale = 1.0
+                                        offset = .zero
+                                        lastOffset = .zero
+                                    } else {
+                                        // Zoom to 2x
+                                        scale = 2.0
+                                    }
                                 }
                             }
                     } else if isLoadingImage {
@@ -214,7 +233,7 @@ struct PlateDetailView: View {
                                 }
                             }
                             .padding(.horizontal)
-                            .padding(.top, 20)
+                            .padding(.top, geometry.safeAreaInsets.top + 20)
                             .transition(.move(edge: .top).combined(with: .opacity))
                         }
 
@@ -241,13 +260,17 @@ struct PlateDetailView: View {
                                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
                             }
                             .padding(.horizontal)
-                            .padding(.bottom, 10)
+                            .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
                     }
                 }
+                .clipped()
             }
         }
+        .edgesIgnoringSafeArea(.all)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .statusBarHidden(true)
         .onAppear {
             originalBrightness = UIScreen.main.brightness
             viewModel.incrementShowCount(for: item)
