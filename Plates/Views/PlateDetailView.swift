@@ -54,6 +54,7 @@ struct PlateDetailView: View {
     @State private var hasAttemptedLoad = false
     @State private var loadError = false
     @State private var showingResetConfirmation = false
+    @State private var imageOpacity: Double = 0.0
 
     private func resetImageState() {
         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
@@ -66,6 +67,12 @@ struct PlateDetailView: View {
 
     private func smoothlyRestoreBrightness() {
         isDismissing = true
+        
+        // Fade out the image and dismiss simultaneously
+        withAnimation(.easeInOut(duration: 0.3)) {
+            imageOpacity = 0.0
+        }
+        
         let steps = 20
         let duration: TimeInterval = 0.3
         let stepDuration = duration / TimeInterval(steps)
@@ -98,11 +105,18 @@ struct PlateDetailView: View {
             isLoadingImage = false
             if image == nil {
                 loadError = true
+            } else {
+                // Fade in the image smoothly
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    imageOpacity = 1.0
+                }
             }
         }
     }
 
     private func retryLoadImage() {
+        // Reset opacity for smooth retry
+        imageOpacity = 0.0
         Task {
             await loadImage()
         }
@@ -124,6 +138,7 @@ struct PlateDetailView: View {
                             .offset(offset)
                             .brightness(0)
                             .contrast(1.0)
+                            .opacity(imageOpacity)
                             .gesture(
                                 SimultaneousGesture(
                                     MagnificationGesture(minimumScaleDelta: 0.01)
