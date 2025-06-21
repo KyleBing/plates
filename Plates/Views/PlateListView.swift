@@ -44,7 +44,7 @@ struct PlateListView: View {
                 
                 List {
                     ForEach(viewModel.plateItems) { item in
-                        PlateItemRow(item: item)
+                        PlateItemRow(item: item, viewModel: viewModel)
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 selectedItem = item
@@ -88,6 +88,7 @@ struct PlateListView: View {
 
 struct PlateItemRow: View {
     let item: PlateItem
+    @ObservedObject var viewModel: PlateViewModel
     @State private var loadedImage: UIImage?
     @State private var isLoadingImage = false
     @State private var hasAttemptedLoad = false
@@ -142,7 +143,17 @@ struct PlateItemRow: View {
         isLoadingImage = true
         
         Task {
-            let image = await PlateItem.loadImage(localURL: item.imageURL, cloudID: item.cloudImageID)
+            let image = await PlateItem.loadImage(
+                localURL: item.imageURL, 
+                cloudID: item.cloudImageID,
+                cachedLocalURL: item.cachedLocalURL
+            ) { cachedURL in
+                // Update the cached URL in the view model
+                Task { @MainActor in
+                    viewModel.updateCachedLocalURL(for: item, cachedURL: cachedURL)
+                }
+            }
+            
             await MainActor.run {
                 loadedImage = image
                 isLoadingImage = false

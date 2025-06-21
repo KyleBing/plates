@@ -73,6 +73,10 @@ struct PlateDetailView: View {
             imageOpacity = 0.0
         }
         
+        // Dismiss immediately while the fade-out animation is running
+        dismiss()
+        
+        // Restore brightness in the background
         let steps = 20
         let duration: TimeInterval = 0.3
         let stepDuration = duration / TimeInterval(steps)
@@ -85,7 +89,6 @@ struct PlateDetailView: View {
 
                 if step == steps - 1 {
                     UIScreen.main.brightness = originalBrightness
-                    dismiss()
                 }
             }
         }
@@ -98,7 +101,16 @@ struct PlateDetailView: View {
         isLoadingImage = true
         loadError = false
 
-        let image = await PlateItem.loadImage(localURL: item.imageURL, cloudID: item.cloudImageID)
+        let image = await PlateItem.loadImage(
+            localURL: item.imageURL, 
+            cloudID: item.cloudImageID,
+            cachedLocalURL: item.cachedLocalURL
+        ) { cachedURL in
+            // Update the cached URL in the view model
+            Task { @MainActor in
+                viewModel.updateCachedLocalURL(for: item, cachedURL: cachedURL)
+            }
+        }
 
         await MainActor.run {
             loadedImage = image

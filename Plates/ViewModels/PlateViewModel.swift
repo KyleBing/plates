@@ -65,7 +65,7 @@ class PlateViewModel: ObservableObject {
         
         // Delete both local and cloud images
         if let imageURL = item.imageURL {
-            PlateItem.deleteImage(at: imageURL, cloudID: item.cloudImageID)
+            PlateItem.deleteImage(at: imageURL, cloudID: item.cloudImageID, cachedLocalURL: item.cachedLocalURL)
         }
         
         saveItems()
@@ -86,6 +86,16 @@ class PlateViewModel: ObservableObject {
     
     func getSavedState(for item: PlateItem) -> ImageState? {
         return imageStates[item.id]
+    }
+    
+    // Update cached local URL when image is downloaded from cloud
+    func updateCachedLocalURL(for item: PlateItem, cachedURL: URL) {
+        if let index = plateItems.firstIndex(where: { $0.id == item.id }) {
+            var updatedItem = item
+            updatedItem.cachedLocalURL = cachedURL
+            plateItems[index] = updatedItem
+            saveItems()
+        }
     }
     
     // Calculate storage usage
@@ -134,6 +144,7 @@ class PlateViewModel: ObservableObject {
             vehicleType: vehicleType,
             imageURL: localURL,
             cloudImageID: result.cloudID,
+            cachedLocalURL: nil,
             showCount: editingItem?.showCount ?? 0
         )
         

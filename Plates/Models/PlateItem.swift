@@ -9,6 +9,7 @@ struct PlateItem: Identifiable, Codable {
     var vehicleType: VehicleType
     var imageURL: URL?
     var cloudImageID: String? // Store CloudKit record ID for cloud images
+    var cachedLocalURL: URL? // Store locally cached image URL for offline access
     var showCount: Int
     
     enum VehicleType: String, Codable, CaseIterable {
@@ -119,13 +120,23 @@ extension PlateItem {
         return await CloudStorageService.shared.downloadImage(cloudID: cloudID)
     }
     
-    static func deleteImage(at url: URL, cloudID: String? = nil) {
-        // Delete from local storage only if file exists
+    static func deleteImage(at url: URL, cloudID: String? = nil, cachedLocalURL: URL? = nil) {
+        // Delete from original local storage only if file exists
         if FileManager.default.fileExists(atPath: url.path) {
             do {
                 try FileManager.default.removeItem(at: url)
             } catch {
                 print("Error deleting image from local storage: \(error)")
+            }
+        }
+        
+        // Delete from cached local storage if it exists
+        if let cachedLocalURL = cachedLocalURL, FileManager.default.fileExists(atPath: cachedLocalURL.path) {
+            do {
+                try FileManager.default.removeItem(at: cachedLocalURL)
+                print("Deleted cached image: \(cachedLocalURL.lastPathComponent)")
+            } catch {
+                print("Error deleting cached image: \(error)")
             }
         }
         
@@ -138,20 +149,57 @@ extension PlateItem {
     }
     
     // Helper method to load image from either local or cloud storage
-    static func loadImage(localURL: URL?, cloudID: String?) async -> UIImage? {
-        // Try local storage first
+    static func loadImage(localURL: URL?, cloudID: String?, cachedLocalURL: URL? = nil, onCached: ((URL) -> Void)? = nil) async -> UIImage? {
+        // Try original local storage first
         if let localURL = localURL {
             if let image = loadImage(from: localURL) {
                 return image
             }
         }
         
+        // Try cached local storage
+        if let cachedLocalURL = cachedLocalURL {
+            if let image = loadImage(from: cachedLocalURL) {
+                return image
+            }
+        }
+        
         // Fall back to cloud storage
         if let cloudID = cloudID {
-            return await loadImageFromCloud(cloudID: cloudID)
+            if let image = await loadImageFromCloud(cloudID: cloudID) {
+                // Save the downloaded image to local storage for offline use
+                if let cachedURL = await saveDownloadedImageToLocal(image: image, cloudID: cloudID, originalLocalURL: localURL) {
+                    // Notify that the image has been cached
+                    onCached?(cachedURL)
+                }
+                return image
+            }
         }
         
         return nil
+    }
+    
+    // Save downloaded image to local storage for offline caching
+    private static func saveDownloadedImageToLocal(image: UIImage, cloudID: String, originalLocalURL: URL?) async -> URL? {
+        // Create a unique filename for the cached image
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let filename = "cached_\(timestamp)_\(UUID().uuidString).jpg"
+        
+        // Get the documents directory
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fileURL = documentsDirectory.appendingPathComponent(filename)
+        
+        // Save to local storage
+        guard let data = image.jpegData(compressionQuality: 0.8) else { return nil }
+        
+        do {
+            try data.write(to: fileURL)
+            print("Image cached locally for offline use: \(fileURL.lastPathComponent)")
+            return fileURL
+        } catch {
+            print("Error caching image locally: \(error)")
+            return nil
+        }
     }
 }
 
