@@ -6,27 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		273C09132E01AF57003D911A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 273C08F82E01AF56003D911A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 273C08FF2E01AF56003D911A;
-			remoteInfo = Plates;
-		};
-		273C091D2E01AF57003D911A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 273C08F82E01AF56003D911A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 273C08FF2E01AF56003D911A;
-			remoteInfo = Plates;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		273C09002E01AF56003D911A /* Plates.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Plates.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		273C09122E01AF57003D911A /* PlatesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlatesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		273C091C2E01AF57003D911A /* PlatesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlatesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -35,34 +16,10 @@
 			path = Plates;
 			sourceTree = "<group>";
 		};
-		273C09152E01AF57003D911A /* PlatesTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PlatesTests;
-			sourceTree = "<group>";
-		};
-		273C091F2E01AF57003D911A /* PlatesUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PlatesUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		273C08FD2E01AF56003D911A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		273C090F2E01AF57003D911A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		273C09192E01AF57003D911A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -76,8 +33,6 @@
 			isa = PBXGroup;
 			children = (
 				273C09022E01AF56003D911A /* Plates */,
-				273C09152E01AF57003D911A /* PlatesTests */,
-				273C091F2E01AF57003D911A /* PlatesUITests */,
 				273C09012E01AF56003D911A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,8 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				273C09002E01AF56003D911A /* Plates.app */,
-				273C09122E01AF57003D911A /* PlatesTests.xctest */,
-				273C091C2E01AF57003D911A /* PlatesUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,52 +70,6 @@
 			productReference = 273C09002E01AF56003D911A /* Plates.app */;
 			productType = "com.apple.product-type.application";
 		};
-		273C09112E01AF57003D911A /* PlatesTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 273C09292E01AF57003D911A /* Build configuration list for PBXNativeTarget "PlatesTests" */;
-			buildPhases = (
-				273C090E2E01AF57003D911A /* Sources */,
-				273C090F2E01AF57003D911A /* Frameworks */,
-				273C09102E01AF57003D911A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				273C09142E01AF57003D911A /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				273C09152E01AF57003D911A /* PlatesTests */,
-			);
-			name = PlatesTests;
-			packageProductDependencies = (
-			);
-			productName = PlatesTests;
-			productReference = 273C09122E01AF57003D911A /* PlatesTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		273C091B2E01AF57003D911A /* PlatesUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 273C092C2E01AF57003D911A /* Build configuration list for PBXNativeTarget "PlatesUITests" */;
-			buildPhases = (
-				273C09182E01AF57003D911A /* Sources */,
-				273C09192E01AF57003D911A /* Frameworks */,
-				273C091A2E01AF57003D911A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				273C091E2E01AF57003D911A /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				273C091F2E01AF57003D911A /* PlatesUITests */,
-			);
-			name = PlatesUITests;
-			packageProductDependencies = (
-			);
-			productName = PlatesUITests;
-			productReference = 273C091C2E01AF57003D911A /* PlatesUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -171,18 +78,10 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					273C08FF2E01AF56003D911A = {
 						CreatedOnToolsVersion = 16.0;
-					};
-					273C09112E01AF57003D911A = {
-						CreatedOnToolsVersion = 16.0;
-						TestTargetID = 273C08FF2E01AF56003D911A;
-					};
-					273C091B2E01AF57003D911A = {
-						CreatedOnToolsVersion = 16.0;
-						TestTargetID = 273C08FF2E01AF56003D911A;
 					};
 				};
 			};
@@ -201,28 +100,12 @@
 			projectRoot = "";
 			targets = (
 				273C08FF2E01AF56003D911A /* Plates */,
-				273C09112E01AF57003D911A /* PlatesTests */,
-				273C091B2E01AF57003D911A /* PlatesUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		273C08FE2E01AF56003D911A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		273C09102E01AF57003D911A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		273C091A2E01AF57003D911A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -239,34 +122,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		273C090E2E01AF57003D911A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		273C09182E01AF57003D911A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		273C09142E01AF57003D911A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 273C08FF2E01AF56003D911A /* Plates */;
-			targetProxy = 273C09132E01AF57003D911A /* PBXContainerItemProxy */;
-		};
-		273C091E2E01AF57003D911A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 273C08FF2E01AF56003D911A /* Plates */;
-			targetProxy = 273C091D2E01AF57003D911A /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		273C09242E01AF57003D911A /* Debug */ = {
@@ -304,6 +160,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = BAJH5UNXWJ;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -327,6 +184,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -367,6 +225,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = BAJH5UNXWJ;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -383,6 +242,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -396,9 +256,9 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Plates/Plates.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"Plates/Preview Content\"";
-				DEVELOPMENT_TEAM = BAJH5UNXWJ;
+				DEVELOPMENT_TEAM = 4J6QFDHMK2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "牌照";
@@ -409,12 +269,13 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taiwuict.Plates;
+				MARKETING_VERSION = 1.4;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.kylebing.Plate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -434,9 +295,9 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Plates/Plates.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"Plates/Preview Content\"";
-				DEVELOPMENT_TEAM = BAJH5UNXWJ;
+				DEVELOPMENT_TEAM = 4J6QFDHMK2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "牌照";
@@ -447,12 +308,13 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taiwuict.Plates;
+				MARKETING_VERSION = 1.4;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.kylebing.Plate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -461,94 +323,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
-		273C092A2E01AF57003D911A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BAJH5UNXWJ;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taiwuict.PlatesTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Plates.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Plates";
-			};
-			name = Debug;
-		};
-		273C092B2E01AF57003D911A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BAJH5UNXWJ;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taiwuict.PlatesTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Plates.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Plates";
-			};
-			name = Release;
-		};
-		273C092D2E01AF57003D911A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BAJH5UNXWJ;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taiwuict.PlatesUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = Plates;
-			};
-			name = Debug;
-		};
-		273C092E2E01AF57003D911A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BAJH5UNXWJ;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taiwuict.PlatesUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = Plates;
 			};
 			name = Release;
 		};
@@ -569,24 +343,6 @@
 			buildConfigurations = (
 				273C09272E01AF57003D911A /* Debug */,
 				273C09282E01AF57003D911A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		273C09292E01AF57003D911A /* Build configuration list for PBXNativeTarget "PlatesTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				273C092A2E01AF57003D911A /* Debug */,
-				273C092B2E01AF57003D911A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		273C092C2E01AF57003D911A /* Build configuration list for PBXNativeTarget "PlatesUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				273C092D2E01AF57003D911A /* Debug */,
-				273C092E2E01AF57003D911A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

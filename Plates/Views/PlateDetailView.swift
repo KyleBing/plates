@@ -201,36 +201,51 @@ struct PlateDetailView: View {
                                 }
                             }
                     } else if isLoadingImage {
-                        VStack {
+                        VStack(spacing: 12) {
                             ProgressView("加载图片中...")
-                                .foregroundColor(.white)
+                                .tint(.white)
+                                .foregroundStyle(.white)
                             Text("正在从云端下载...")
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                                 .font(.caption)
+                                .fontWeight(.medium)
                                 .padding(.top, 8)
                         }
                     } else if loadError {
                         VStack(spacing: 16) {
                             Image(systemName: "exclamationmark.triangle")
                                 .font(.largeTitle)
-                                .foregroundColor(.white)
+                                .fontWeight(.medium)
+                                .foregroundStyle(.white)
+                                .symbolRenderingMode(.hierarchical)
                             Text("图片加载失败")
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                                 .font(.headline)
+                                .fontWeight(.semibold)
                             Text("无法从本地或云端加载图片")
-                                .foregroundColor(.white.opacity(0.8))
+                                .foregroundStyle(.white.opacity(0.8))
                                 .font(.caption)
                                 .multilineTextAlignment(.center)
                             Button(action: retryLoadImage) {
-                                HStack {
+                                HStack(spacing: 8) {
                                     Image(systemName: "arrow.clockwise")
+                                        .fontWeight(.semibold)
                                     Text("重试")
+                                        .fontWeight(.semibold)
                                 }
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 10)
-                                .background(Color.blue)
-                                .cornerRadius(8)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 14)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(.ultraThinMaterial)
+                                        .shadow(color: .black.opacity(0.3), radius: 12, x: 0, y: 6)
+                                        .shadow(color: .white.opacity(0.1), radius: 1, x: 0, y: -1)
+                                }
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(.white.opacity(0.2), lineWidth: 1)
+                                }
                             }
                         }
                         .padding()
@@ -244,9 +259,20 @@ struct PlateDetailView: View {
                                 }) {
                                     Image(systemName: "xmark")
                                         .font(.title2)
-                                        .foregroundColor(.white)
-                                        .frame(width: 44, height: 44)
-                                        .background(.ultraThinMaterial, in: Circle())
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(.white)
+                                        .symbolRenderingMode(.hierarchical)
+                                        .frame(width: 56, height: 56)
+                                        .background {
+                                            Circle()
+                                                .fill(.ultraThinMaterial)
+                                                .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
+                                                .shadow(color: .white.opacity(0.1), radius: 1, x: 0, y: -1)
+                                        }
+                                        .overlay {
+                                            Circle()
+                                                .stroke(.white.opacity(0.2), lineWidth: 1)
+                                        }
                                 }
                                 
                                 Spacer()
@@ -254,9 +280,20 @@ struct PlateDetailView: View {
                                 Button(action: { showingResetConfirmation = true }) {
                                     Image(systemName: "arrow.counterclockwise")
                                         .font(.title2)
-                                        .foregroundColor(.white)
-                                        .frame(width: 44, height: 44)
-                                        .background(.ultraThinMaterial, in: Circle())
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(.white)
+                                        .symbolRenderingMode(.hierarchical)
+                                        .frame(width: 56, height: 56)
+                                        .background {
+                                            Circle()
+                                                .fill(.ultraThinMaterial)
+                                                .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
+                                                .shadow(color: .white.opacity(0.1), radius: 1, x: 0, y: -1)
+                                        }
+                                        .overlay {
+                                            Circle()
+                                                .stroke(.white.opacity(0.2), lineWidth: 1)
+                                        }
                                 }
                             }
                             .padding(.horizontal)
@@ -268,9 +305,13 @@ struct PlateDetailView: View {
 
                         if showControls {
                             VStack(spacing: 20) {
-                                HStack {
+                                HStack(spacing: 12) {
                                     Image(systemName: "sun.min")
-                                        .foregroundColor(.white)
+                                        .font(.title3)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                        .symbolRenderingMode(.hierarchical)
+                                    
                                     Slider(value: Binding(
                                         get: { screenBrightness },
                                         set: { newValue in
@@ -278,13 +319,26 @@ struct PlateDetailView: View {
                                             UIScreen.main.brightness = newValue
                                         }
                                     ), in: 0...1)
-                                    .accentColor(.white)
+                                    .tint(.white)
+                                    
                                     Image(systemName: "sun.max")
-                                        .foregroundColor(.white)
+                                        .font(.title3)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                        .symbolRenderingMode(.hierarchical)
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 16)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(.ultraThinMaterial)
+                                        .shadow(color: .black.opacity(0.3), radius: 15, x: 0, y: 8)
+                                        .shadow(color: .white.opacity(0.1), radius: 1, x: 0, y: -1)
+                                }
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(.white.opacity(0.2), lineWidth: 1)
+                                }
                             }
                             .padding(.horizontal)
                             .padding(.bottom, geometry.safeAreaInsets.bottom + 20)

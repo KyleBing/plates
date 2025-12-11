@@ -13,7 +13,7 @@ The "Server Rejected Request" error indicates that CloudKit is not properly conf
 2. **Enable CloudKit**
    - Navigate to "Certificates, Identifiers & Profiles"
    - Select "Identifiers" from the left sidebar
-   - Find your app's identifier (com.taiwuict.Plates)
+   - Find your app's identifier (cn.kylebing.Plate)
    - Click on it to edit
 
 3. **Configure CloudKit Container**
@@ -21,7 +21,7 @@ The "Server Rejected Request" error indicates that CloudKit is not properly conf
    - Check the box to enable CloudKit
    - Click "Configure" next to CloudKit
    - Create a new container or select existing one
-   - Container ID should be: `iCloud.com.taiwuict.Plates`
+   - Container ID should be: `iCloud.cn.kylebing.Plate`
 
 ## Step 2: Xcode Project Configuration
 
@@ -29,14 +29,14 @@ The "Server Rejected Request" error indicates that CloudKit is not properly conf
    - Open your Xcode project
    - Select the project in the navigator
    - Select your target
-   - In "General" tab, ensure Bundle Identifier matches: `com.taiwuict.Plates`
+   - In "General" tab, ensure Bundle Identifier matches: `cn.kylebing.Plate`
 
 2. **Verify Entitlements**
    - Check that `Plates.entitlements` contains:
    ```xml
    <key>com.apple.developer.icloud-container-identifiers</key>
    <array>
-       <string>iCloud.com.taiwuict.Plates</string>
+       <string>iCloud.cn.kylebing.Plate</string>
    </array>
    <key>com.apple.developer.icloud-services</key>
    <array>
@@ -53,7 +53,7 @@ The "Server Rejected Request" error indicates that CloudKit is not properly conf
 
 1. **Access CloudKit Dashboard**
    - Go to [CloudKit Console](https://icloud.developer.apple.com/dashboard/)
-   - Select your container: `iCloud.com.taiwuict.Plates`
+   - Select your container: `iCloud.cn.kylebing.Plate`
 
 2. **Create Schema**
    - Go to "Schema" tab
