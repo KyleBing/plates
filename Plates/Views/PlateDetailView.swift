@@ -1,38 +1,52 @@
 import SwiftUI
 
-struct LandscapeViewController: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        let controller = UIViewController()
-        return controller
+class OrientationViewController: UIViewController {
+    var targetOrientation: UIInterfaceOrientationMask = .landscape
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setOrientation(targetOrientation)
     }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        if let windowScene = uiViewController.view.window?.windowScene {
-            let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(
-                interfaceOrientations: .landscapeRight
-            )
-            windowScene.requestGeometryUpdate(geometryPreferences) { error in
-                print("Error updating orientation: \(error.localizedDescription)")
+    
+    func setOrientation(_ orientation: UIInterfaceOrientationMask) {
+        guard let windowScene = view.window?.windowScene else {
+            // Retry after a short delay if windowScene is not available yet
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.setOrientation(orientation)
             }
+            return
+        }
+        
+        let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(
+            interfaceOrientations: orientation
+        )
+        windowScene.requestGeometryUpdate(geometryPreferences) { (error: any Error) in
+            print("Error updating orientation: \(error.localizedDescription)")
         }
     }
 }
 
-struct PortraitViewController: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        let controller = UIViewController()
+struct LandscapeViewController: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> OrientationViewController {
+        let controller = OrientationViewController()
+        controller.targetOrientation = .landscape
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        if let windowScene = uiViewController.view.window?.windowScene {
-            let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(
-                interfaceOrientations: .portrait
-            )
-            windowScene.requestGeometryUpdate(geometryPreferences) { error in
-                print("Error updating orientation: \(error.localizedDescription)")
-            }
-        }
+    func updateUIViewController(_ uiViewController: OrientationViewController, context: Context) {
+        uiViewController.setOrientation(.landscape)
+    }
+}
+
+struct PortraitViewController: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> OrientationViewController {
+        let controller = OrientationViewController()
+        controller.targetOrientation = .portrait
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: OrientationViewController, context: Context) {
+        uiViewController.setOrientation(.portrait)
     }
 }
 
@@ -47,7 +61,7 @@ struct PlateDetailView: View {
     @State private var offset: CGSize = .zero
     @State private var lastScale: CGFloat = 1.0
     @State private var lastOffset: CGSize = .zero
-    @State private var showControls = true
+    @State private var showControls = false
     @State private var isDismissing = false
     @State private var loadedImage: UIImage?
     @State private var isLoadingImage = false
@@ -67,6 +81,18 @@ struct PlateDetailView: View {
 
     private func smoothlyRestoreBrightness() {
         isDismissing = true
+        
+        // Restore portrait orientation before dismissing
+        if let windowScene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive }) {
+            let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(
+                interfaceOrientations: .portrait
+            )
+            windowScene.requestGeometryUpdate(geometryPreferences) { (error: any Error) in
+                print("Error restoring orientation: \(error.localizedDescription)")
+            }
+        }
         
         // Fade out the image and dismiss simultaneously
         withAnimation(.easeInOut(duration: 0.3)) {
@@ -140,6 +166,12 @@ struct PlateDetailView: View {
                 ZStack {
                     Color.black
                         .edgesIgnoringSafeArea(.all)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                showControls.toggle()
+                            }
+                        }
 
                     if let image = loadedImage {
                         Image(uiImage: image)
@@ -153,40 +185,43 @@ struct PlateDetailView: View {
                             .opacity(imageOpacity)
                             .gesture(
                                 SimultaneousGesture(
-                                    MagnificationGesture(minimumScaleDelta: 0.01)
-                                        .onChanged { value in
-                                            let delta = value / lastScale
-                                            lastScale = value
-                                            scale = min(max(scale * delta, 0.1), 20.0)
-                                        }
+                                    SimultaneousGesture(
+                                        MagnificationGesture(minimumScaleDelta: 0.01)
+                                            .onChanged { value in
+                                                let delta = value / lastScale
+                                                lastScale = value
+                                                scale = min(max(scale * delta, 0.1), 20.0)
+                                            }
+                                            .onEnded { _ in
+                                                lastScale = 1.0
+                                            },
+                                        DragGesture(minimumDistance: 0)
+                                            .onChanged { value in
+                                                let newOffset = CGSize(
+                                                    width: lastOffset.width + value.translation.width,
+                                                    height: lastOffset.height + value.translation.height
+                                                )
+                                                
+                                                // Allow some overflow but prevent excessive dragging
+                                                let maxOffset = geometry.size.width * 0.5 * scale
+                                                offset = CGSize(
+                                                    width: max(-maxOffset, min(maxOffset, newOffset.width)),
+                                                    height: max(-maxOffset, min(maxOffset, newOffset.height))
+                                                )
+                                            }
+                                            .onEnded { _ in
+                                                lastOffset = offset
+                                            }
+                                    ),
+                                    TapGesture()
                                         .onEnded { _ in
-                                            lastScale = 1.0
-                                        },
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let newOffset = CGSize(
-                                                width: lastOffset.width + value.translation.width,
-                                                height: lastOffset.height + value.translation.height
-                                            )
-                                            
-                                            // Allow some overflow but prevent excessive dragging
-                                            let maxOffset = geometry.size.width * 0.5 * scale
-                                            offset = CGSize(
-                                                width: max(-maxOffset, min(maxOffset, newOffset.width)),
-                                                height: max(-maxOffset, min(maxOffset, newOffset.height))
-                                            )
-                                        }
-                                        .onEnded { _ in
-                                            lastOffset = offset
+                                            withAnimation(.easeInOut(duration: 0.3)) {
+                                                showControls.toggle()
+                                            }
                                         }
                                 )
                             )
                             .contentShape(Rectangle())
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    showControls.toggle()
-                                }
-                            }
                             .onTapGesture(count: 2) {
                                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                                     if scale > 1.0 {
@@ -352,6 +387,10 @@ struct PlateDetailView: View {
         .edgesIgnoringSafeArea(.all)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .statusBarHidden(true)
+        .background(
+            LandscapeViewController()
+                .allowsHitTesting(false)
+        )
         .onAppear {
             originalBrightness = UIScreen.main.brightness
             viewModel.incrementShowCount(for: item)
@@ -360,6 +399,43 @@ struct PlateDetailView: View {
                 offset = savedState.offset
                 lastOffset = savedState.offset
             }
+            
+            // Set landscape orientation with retry mechanism
+            func setLandscapeOrientation(retryCount: Int = 0) {
+                guard retryCount < 10 else {
+                    print("Failed to set landscape orientation after multiple attempts")
+                    return
+                }
+                
+                if let windowScene = UIApplication.shared.connectedScenes
+                    .compactMap({ $0 as? UIWindowScene })
+                    .first(where: { $0.activationState == .foregroundActive }),
+                   let _ = windowScene.windows.first {
+                    
+                    let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(
+                        interfaceOrientations: .landscape
+                    )
+                    windowScene.requestGeometryUpdate(geometryPreferences) { (error: any Error) in
+                        print("Error setting landscape orientation (attempt \(retryCount + 1)): \(error.localizedDescription)")
+                        if retryCount < 9 {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                setLandscapeOrientation(retryCount: retryCount + 1)
+                            }
+                        }
+                    }
+                } else {
+                    // Retry if windowScene is not ready
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        setLandscapeOrientation(retryCount: retryCount + 1)
+                    }
+                }
+            }
+            
+            // Start setting orientation after a brief delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                setLandscapeOrientation()
+            }
+            
             Task {
                 await loadImage()
             }
@@ -368,6 +444,19 @@ struct PlateDetailView: View {
             if !isDismissing {
                 UIScreen.main.brightness = originalBrightness
             }
+            
+            // Restore portrait orientation when leaving the view
+            if let windowScene = UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
+                .first(where: { $0.activationState == .foregroundActive }) {
+                let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(
+                    interfaceOrientations: .portrait
+                )
+                windowScene.requestGeometryUpdate(geometryPreferences) { (error: any Error) in
+                    print("Error restoring orientation: \(error.localizedDescription)")
+                }
+            }
+            
             viewModel.saveState(for: item, scale: scale, offset: offset)
         }
         .confirmationDialog(
